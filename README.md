@@ -9,7 +9,7 @@ This project is a very simple e-commerce website for sports products.
 
 ## How to run in development
 
-> These steps assume that you have a SQL Server instance running on your machine. If not, you can use the [SQL Server Docker image](https://hub.docker.com/_/microsoft-mssql-server) to run one. Make sure to set the environment variable `DOTNET_ConnectionStrings__SqlDatabase` to the connection string of the SQL Server instance.
+> These steps assume that you have a SQL Server instance running on your machine. If not, you can use the [SQL Server Docker image](https://hub.docker.com/_/microsoft-mssql-server) to run one. Make sure to set the correct connection string of the SQL Server instance in `src/Server/appsettings.Development.json`.
 
 1. Clone the repository
 2. Restore the packages: `dotnet restore src/Server/Server.csproj`
