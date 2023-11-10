@@ -4,8 +4,8 @@ This project is a very simple e-commerce website for sports products.
 
 ## Requirements
 
-- .NET 6.0 SDK
-- SQL Server
+- [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
 ## How to run in development
 
@@ -31,5 +31,5 @@ This project is a very simple e-commerce website for sports products.
 > No database is required to run the unit tests.
 
 1. Clone the repository
-2. Restore the packages: `dotnet restore src/Server/Server.csproj` and `dotnet restore tests/Domain/Domain.csproj`
-3. Run the unit tests for the domain: `dotnet test tests/Domain/Domain.csproj`
+2. Restore the packages: `dotnet restore src/Server/Server.csproj` and `dotnet restore tests/Domain.Tests/Domain.Tests.csproj`
+3. Run the unit tests for the domain: `dotnet test tests/Domain.Tests/Domain.Tests.csproj`
