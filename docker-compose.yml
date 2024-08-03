@@ -7,6 +7,6 @@ services:
       context: .
       dockerfile: ./Docker/Dockerfile.prod
     environment:
-      - ConnectionStrings__SqlDatabase="Server=sql-server-container;Database=SportStore;User=SA;Password=SQLcontainer1
+      - ConnectionStrings__SqlDatabase=Server=sql-server-container;Database=SportStore;User=SA;Password=SQLcontainer1
     ports:
       - "5001:80"
