@@ -5,7 +5,7 @@ services:
     image: woutverfaillie/p3ops-app:latest
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: ./Docker/Dockerfile.prod
     environment:
       - ConnectionStrings__SqlDatabase="Server=sql-server-container;Database=SportStore;User=SA;Password=SQLcontainer1
     ports:
