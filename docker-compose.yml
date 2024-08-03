@@ -9,4 +9,4 @@ services:
     environment:
       - ConnectionStrings__SqlDatabase="Server=sql-server-container;Database=SportStore;User=SA;Password=SQLcontainer1
     ports:
-      - "5000:80"
+      - "5001:80"
