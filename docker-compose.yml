@@ -1,28 +1,9 @@
-version: '3.8'
+---
+version: "3.7"
 
 services:
-  dotnet6-container:
-    image: mcr.microsoft.com/dotnet/sdk:6.0
+  p3ops-app:
+    image: woutverfaillie/p3ops-app:latest
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.prod
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=your_database_name;User Id=your_user_id;Password=your_password;
-    ports:
-      - "5001:80"
-    networks:
-      - app-network
-
-  sql-server-container:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      SA_PASSWORD: "SQLcontainer1"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1434:1433"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
