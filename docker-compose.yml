@@ -5,7 +5,7 @@ services:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: ./Docker/Dockerfile.prod
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=your_database_name;User Id=your_user_id;Password=your_password;
     ports:
