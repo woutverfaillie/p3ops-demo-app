@@ -6,4 +6,4 @@ services:
     image: woutverfaillie/p3ops-app:latest
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.prod
+      dockerfile: ./Docker/Dockerfile.prod
