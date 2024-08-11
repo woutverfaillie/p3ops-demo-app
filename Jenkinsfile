@@ -1,12 +1,12 @@
 pipeline {
-    agent any
+        agent any
 
-    environment {
-        CONTAINER_NAME = 'dotnet6-container'
-        APP_PATH = 'p3ops-demo-app'
-        PROJECT_PATH = 'src/Server/Server.csproj'
-        PUBLISH_PATH = 'publish'
-    }
+        environment {
+            CONTAINER_NAME = 'dotnet6-container'
+            APP_PATH = 'p3ops-demo-app'
+            PROJECT_PATH = 'src/Server/Server.csproj'
+            PUBLISH_PATH = 'publish'
+        }
 
     stages {
 
@@ -19,24 +19,17 @@ pipeline {
         stage('Clone repo') {
             steps {
                 sh 'git clone --branch main https://github.com/woutverfaillie/p3ops-demo-app.git'
-            }
-        }
 
-        stage('Set Git Remote URL') {
-            steps {
-                dir(APP_PATH) {
-                    sh 'git config remote.origin.url https://github.com/woutverfaillie/p3ops-demo-app.git'
-                }
             }
         }
 
         stage('Copy files to dotnet6-container') {
             steps {
                 script {
-                    sh 'docker cp p3ops-demo-app dotnet6-container:/'
+                    sh 'docker cp p3ops-demo-app dotnet6-container:'
                 }
             }
-        }
+        } 
 
         stage('Restore Dependencies') {
             steps {
@@ -72,5 +65,5 @@ pipeline {
             echo 'Cleaning up...'
             sh 'docker logout || true'
         }
-    }
+     }
 }
