@@ -2,16 +2,15 @@ pipeline {
     agent any
 
     environment {
-        CONTAINER_NAME = 'dotnet6-container'  // Naam van de bestaande container
+        CONTAINER_NAME = 'dotnet6-container'  // Name of the existing container
         APP_PATH = 'p3ops-demo-app'
         PROJECT_PATH = 'src/Server/Server.csproj'
         PUBLISH_PATH = 'publish'
         
-        // Zet de omgevingsvariabelen voor de container
+        // Set environment variables for the container
         DOTNET_ConnectionStrings__SqlDatabase = "Server=sql-server-container;Database=SportStore;User=SA;Password=SQLcontainer1;MultipleActiveResultSets=true"
         DOTNET_ENVIRONMENT = 'Production'
     }
-
 
     stages {
         stage('Delete REPO') {
@@ -54,6 +53,13 @@ pipeline {
             }
         }
 
+        stage('Static Analysis/Linting') {
+            steps {
+                echo 'Running static analysis...'
+                sh 'docker exec ${CONTAINER_NAME} bash -c "dotnet format ${PROJECT_PATH} --check"'
+            }
+        }
+
         stage('Restore Dependencies') {
             steps {
                 echo 'Restoring .NET dependencies...'
@@ -68,24 +74,24 @@ pipeline {
             }
         }
 
-        stage('Publish and start app') {
+        stage('Publish and Start App') {
             steps {
                 echo 'Publishing .NET application...'
                 sh 'docker exec ${CONTAINER_NAME} bash -c "dotnet publish ${PROJECT_PATH} -c Release -o ${PUBLISH_PATH}"'
             }
-
         }
-     stage('Run Application') {
+
+        stage('Run Application') {
             steps {
-        echo 'Running the .NET application...'
-        sh """
-            docker exec ${CONTAINER_NAME} bash -c '
-            export DOTNET_ConnectionStrings__SqlDatabase="${DOTNET_ConnectionStrings__SqlDatabase}" &&
-            export DOTNET_ENVIRONMENT="${DOTNET_ENVIRONMENT}" &&
-            cd ${PUBLISH_PATH} &&
-            nohup dotnet Server.dll > /dev/null 2>&1 &
-            '
-        """
+                echo 'Running the .NET application...'
+                sh """
+                    docker exec ${CONTAINER_NAME} bash -c '
+                    export DOTNET_ConnectionStrings__SqlDatabase="${DOTNET_ConnectionStrings__SqlDatabase}" &&
+                    export DOTNET_ENVIRONMENT="${DOTNET_ENVIRONMENT}" &&
+                    cd ${PUBLISH_PATH} &&
+                    nohup dotnet Server.dll > /dev/null 2>&1 &
+                    '
+                """
             }
         }
     }
@@ -95,5 +101,5 @@ pipeline {
             echo 'Cleaning up...'
             sh 'docker logout'
         }
-     }
+    }
 }
