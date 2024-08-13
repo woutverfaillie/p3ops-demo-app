@@ -41,8 +41,8 @@
 }
 
     .pageloader.is-white {
-        background-color: #fff;
-        background: #fff
+        background-color: red;
+        background: red
     }
 
         .pageloader.is-white::after {
