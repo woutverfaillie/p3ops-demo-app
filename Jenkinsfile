@@ -26,16 +26,16 @@ pipeline {
             steps {
                 script {
                     def dotnetContainerExists = sh(script: 'docker ps -q -f name=dotnet6-container', returnStatus: true) == 0
-                    def sqlContainerExists = sh(script: 'docker ps -q -f name=sql-container', returnStatus: true) == 0
-                    def jenkinsContainerExists = sh(script: 'docker ps -q -f name=jenkins', returnStatus: true) == 0
+                    def sqlContainerExists = sh(script: 'docker ps -q -f name=sql-server-container', returnStatus: true) == 0
+                    def jenkinsContainerExists = sh(script: 'docker ps -q -f name=jenkins-container', returnStatus: true) == 0
                     if (!dotnetContainerExists) {
                         error "dotnet6-container is not running"
                     }
                     if (!sqlContainerExists) {
-                        error "sql-container is not running"
+                        error "sql-server-container is not running"
                     }
                     if (!jenkinsContainerExists) {
-                        error "jenkins container is not running"
+                        error "jenkins-container is not running"
                     }
                 }
             }
@@ -54,6 +54,13 @@ pipeline {
             }
         }
 
+        stage('Lint Project') {
+            steps {
+                echo 'Linting .NET project...'
+                sh 'docker exec ${CONTAINER_NAME} bash -c "dotnet tool install -g dotnet-format || true"'
+                sh 'docker exec ${CONTAINER_NAME} bash -c "~/.dotnet/tools/dotnet-format ${PROJECT_PATH}"'
+            }
+        }
 
         stage('Build in dotnet6-container') {
             steps {
@@ -67,17 +74,17 @@ pipeline {
                 sh 'docker exec ${CONTAINER_NAME} bash -c "dotnet publish ${PROJECT_PATH} -c Release -o ${PUBLISH_PATH}"'
             }
         }
-     stage('Run Application') {
+        stage('Run Application') {
             steps {
-        echo 'Running the .NET application...'
-        sh """
-            docker exec ${CONTAINER_NAME} bash -c '
-            export DOTNET_ConnectionStrings__SqlDatabase="${DOTNET_ConnectionStrings__SqlDatabase}" &&
-            export DOTNET_ENVIRONMENT="${DOTNET_ENVIRONMENT}" &&
-            cd ${PUBLISH_PATH} &&
-            nohup dotnet Server.dll > /dev/null 2>&1 &
-            '
-        """
+                echo 'Running the .NET application...'
+                sh """
+                    docker exec ${CONTAINER_NAME} bash -c '
+                    export DOTNET_ConnectionStrings__SqlDatabase="${DOTNET_ConnectionStrings__SqlDatabase}" &&
+                    export DOTNET_ENVIRONMENT="${DOTNET_ENVIRONMENT}" &&
+                    cd ${PUBLISH_PATH} &&
+                    nohup dotnet Server.dll > /dev/null 2>&1 &
+                    '
+                """
             }
         }
         stage('Test app') {
@@ -86,12 +93,11 @@ pipeline {
                 sh 'docker exec ${CONTAINER_NAME} bash -c "dotnet test ${TEST_PATH}"'
             }
         }
-
     }
     post {
         always {
             echo 'Cleaning up...'
             sh 'docker logout'
         }
-     }
+    }
 }
